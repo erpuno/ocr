@@ -9,18 +9,14 @@ LANG = 'ukr+eng'
 DPI = 300
 
 
-def get_text(stream):
-    """Read document from data bytes."""
-    doc = fitz.open(stream=stream)
-    text = ''
-    for page in doc:
-        ocr = page.get_textpage_ocr(language=LANG, dpi=DPI)
-        text += ocr.extractText()
-
-    return text
+def get_pages(stream):
+    """Read document pages from data bytes."""
+    return [
+        page.get_textpage_ocr(language=LANG, dpi=DPI).extractText()
+        for page in fitz.open(stream=stream)]
 
 
 if __name__ == '__main__':
     print(os.environ['TESSDATA_PREFIX'])
-    preview = get_text(open(sys.argv[1], 'rb').read())
+    preview = get_pages(open(sys.argv[1], 'rb').read())
     print(preview)

@@ -5,9 +5,10 @@
 CREATE TABLE IF NOT EXISTS public.documents
 (
     id uuid NOT NULL DEFAULT gen_random_uuid(),
-    text text COLLATE pg_catalog."default" NOT NULL DEFAULT ''::text,
     status character varying(8) COLLATE pg_catalog."default" NOT NULL DEFAULT 'PENDING'::character varying,
-    ts tsvector GENERATED ALWAYS AS (to_tsvector('simple'::regconfig, text)) STORED,
+    meta jsonb NOT NULL DEFAULT '{}'::jsonb,
+    text text COLLATE pg_catalog."default" NOT NULL DEFAULT ''::text,
+    ts tsvector GENERATED ALWAYS AS (to_tsvector('ukrainian'::regconfig, text)) STORED,
     CONSTRAINT documents_pkey PRIMARY KEY (id)
 );
 
@@ -18,3 +19,15 @@ CREATE TABLE IF NOT EXISTS public.documents
 CREATE INDEX IF NOT EXISTS ts_idx
     ON public.documents USING gin
     (ts);
+
+-- Table: public.pages
+
+-- DROP TABLE IF EXISTS public.pages;
+
+CREATE TABLE IF NOT EXISTS public.pages
+(
+    document_id uuid NOT NULL,
+    number smallint NOT NULL,
+    text text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT pages_pkey PRIMARY KEY (document_id, number)
+)
