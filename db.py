@@ -72,7 +72,7 @@ async def search_documents(plain_query, limit, offset):
                ts_rank_cd(ts, query) AS rank
         FROM   documents, to_tsquery(:search_config, :ts_query) query
         WHERE  query @@ ts
-        ORDER BY rank DESC
+        ORDER BY rank DESC, id DESC
         LIMIT :limit OFFSET :offset;""").bindparams(
             search_config=SEARCH_CONFIG,
             ts_query=plainto_tsquery(plain_query),
